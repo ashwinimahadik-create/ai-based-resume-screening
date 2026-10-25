@@ -10,15 +10,19 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'python3 --version'
-                sh 'python3 -m pip --version'
-                sh 'python3 -m pip install --user -r requirements.txt'
+                dir('ai-based-resume-screening-main') {
+                    sh 'python3 --version'
+                    sh 'python3 -m pip --version'
+                    sh 'python3 -m pip install --user -r requirements.txt'
+                }
             }
         }
 
         stage('Validate Python Files') {
             steps {
-                sh 'python3 -m py_compile app.py screening.py database.py'
+                dir('ai-based-resume-screening-main') {
+                    sh 'python3 -m py_compile app.py screening.py database.py'
+                }
             }
         }
     }
