@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'python3 --version'
+                sh 'python3 -m pip --version'
+                sh 'python3 -m pip install --user -r requirements.txt'
+            }
+        }
+
+        stage('Validate Python Files') {
+            steps {
+                sh 'python3 -m py_compile app.py screening.py database.py'
+            }
+        }
+    }
+}
