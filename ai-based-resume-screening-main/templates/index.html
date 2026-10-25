@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Screening</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="brand">AI Resume Screening</div>
+    <div class="nav-links">
+        <a href="{{ url_for('index') }}">Screening</a>
+        <a href="{{ url_for('history') }}">Database / History</a>
+    </div>
+</nav>
+
+<main class="page">
+    <section class="hero">
+        <div>
+            <span class="badge">AI + NLP + Ranking + SQLite</span>
+            <h1>Resume Screening & Candidate Ranking System</h1>
+            <p>
+                Compare multiple PDF resumes against a job description,
+                calculate a ranking score, detect skills, and store screening
+                results in a database.
+            </p>
+        </div>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="card">
+        <form method="POST" enctype="multipart/form-data" id="screeningForm">
+
+            <label for="job_description">Job Description</label>
+            <textarea
+                id="job_description"
+                name="job_description"
+                rows="10"
+                placeholder="Example: We need a Python developer with Machine Learning, SQL, Git and Docker..."
+                required></textarea>
+
+            <label>Candidate Resumes</label>
+
+            <div class="drop-zone" id="dropZone">
+                <input
+                    type="file"
+                    id="resumes"
+                    name="resumes"
+                    accept=".pdf,application/pdf"
+                    multiple
+                    required>
+
+                <div class="drop-content">
+                    <div class="upload-icon">↑</div>
+                    <h3>Choose multiple PDF resumes</h3>
+                    <p>Click here or drag and drop PDF files.</p>
+                    <small>You can select 2, 3, 5 or more resumes at once.</small>
+                </div>
+            </div>
+
+            <div id="fileList" class="file-list"></div>
+
+            <button type="submit" class="primary-btn" id="analyzeBtn">
+                Analyze & Rank Candidates
+            </button>
+        </form>
+    </section>
+
+    <section class="info-grid">
+        <div class="info-card">
+            <h3>1. Text Extraction</h3>
+            <p>Reads text from uploaded PDF resumes.</p>
+        </div>
+        <div class="info-card">
+            <h3>2. NLP Matching</h3>
+            <p>Uses TF-IDF and cosine similarity.</p>
+        </div>
+        <div class="info-card">
+            <h3>3. Skill Analysis</h3>
+            <p>Finds matched and missing required skills.</p>
+        </div>
+        <div class="info-card">
+            <h3>4. Ranking + Database</h3>
+            <p>Combines scores and stores results in SQLite.</p>
+        </div>
+    </section>
+</main>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="brand">AI Resume Screening</div>
+    <div class="nav-links">
+        <a href="{{ url_for('index') }}">New Screening</a>
+        <a href="{{ url_for('history') }}">Database / History</a>
+    </div>
+</nav>
+
+<main class="page">
+
+    <section class="results-header">
+        <div>
+            <span class="badge">SQLite Database</span>
+            <h1>Screening History</h1>
+            <p>Previously analyzed candidates stored by the system.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('clear_history_route') }}"
+              onsubmit="return confirm('Clear all screening history?');">
+            <button class="danger-btn" type="submit">Clear History</button>
+        </form>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <span>Total Candidates</span>
+            <strong>{{ stats.total_candidates }}</strong>
+        </div>
+        <div class="stat-card">
+            <span>Average Score</span>
+            <strong>{{ stats.average_score }}%</strong>
+        </div>
+        <div class="stat-card">
+            <span>Highest Score</span>
+            <strong>{{ stats.highest_score }}%</strong>
+        </div>
+    </section>
+
+    <section class="table-card">
+        {% if candidates %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Resume</th>
+                        <th>Final Score</th>
+                        <th>Similarity</th>
+                        <th>Skill Coverage</th>
+                        <th>Matched Skills</th>
+                        <th>Missing Skills</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for candidate in candidates %}
+                    <tr>
+                        <td>#{{ loop.index }}</td>
+                        <td>{{ candidate.filename }}</td>
+                        <td><strong>{{ candidate.score }}%</strong></td>
+                        <td>{{ candidate.similarity_score }}%</td>
+                        <td>{{ candidate.skill_score }}%</td>
+                        <td>{{ candidate.matched_skills or "-" }}</td>
+                        <td>{{ candidate.missing_skills or "-" }}</td>
+                        <td>{{ candidate.created_at }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>No database records yet</h2>
+                <p>Run a screening first and the results will appear here.</p>
+                <a class="primary-btn inline-btn" href="{{ url_for('index') }}">Start Screening</a>
+            </div>
+        {% endif %}
+    </section>
+
+</main>
+</body>
+</html>

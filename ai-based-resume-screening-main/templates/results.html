@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="brand">AI Resume Screening</div>
+    <div class="nav-links">
+        <a href="{{ url_for('index') }}">New Screening</a>
+        <a href="{{ url_for('history') }}">Database / History</a>
+    </div>
+</nav>
+
+<main class="page">
+
+    <section class="results-header">
+        <div>
+            <span class="badge">Screening Complete</span>
+            <h1>Candidate Ranking</h1>
+            <p>{{ results|length }} candidate(s) successfully analyzed.</p>
+        </div>
+        <a class="secondary-btn" href="{{ url_for('index') }}">New Screening</a>
+    </section>
+
+    {% if skipped %}
+    <div class="alert error">
+        <strong>Skipped files:</strong>
+        {% for item in skipped %}
+            <div>{{ item }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if results %}
+        <section class="ranking-list">
+
+        {% for candidate in results %}
+            <article class="candidate-card">
+                <div class="rank">
+                    <span>Rank</span>
+                    <strong>#{{ loop.index }}</strong>
+                </div>
+
+                <div class="candidate-main">
+                    <div class="candidate-title">
+                        <div>
+                            <h2>{{ candidate.filename }}</h2>
+                            <p>{{ candidate.explanation }}</p>
+                            <a
+    href="{{ url_for('view_resume', filename=candidate.stored_filename) }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="secondary-btn">
+    View Resume PDF
+</a>
+                        </div>
+
+                        <div class="score">
+                            <strong>{{ candidate.score }}%</strong>
+                            <span>Final Score</span>
+                        </div>
+                    </div>
+
+                   <div class="score-grid">
+    <div>
+        <span>TF-IDF Similarity</span>
+        <strong>{{ candidate.similarity_score }}%</strong>
+    </div>
+
+    <div>
+        <span>Skill Coverage</span>
+        <strong>{{ candidate.skill_score }}%</strong>
+    </div>
+
+    <div>
+        <span>SVM Prediction</span>
+        <strong>{{ candidate.svm_result }}</strong>
+    </div>
+
+    <div>
+        <span>SVM Confidence</span>
+        <strong>{{ candidate.svm_confidence }}%</strong>
+    </div>
+</div>
+
+                    <div class="skills-section">
+                        <div>
+                            <h4>Matched Skills</h4>
+                            <div class="chips">
+                                {% for skill in candidate.matched_skills %}
+                                    <span class="chip matched">{{ skill }}</span>
+                                {% else %}
+                                    <span class="muted">None detected</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4>Missing Skills</h4>
+                            <div class="chips">
+                                {% for skill in candidate.missing_skills %}
+                                    <span class="chip missing">{{ skill }}</span>
+                                {% else %}
+                                    <span class="muted">None</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+
+        </section>
+    {% else %}
+        <div class="card">
+            <h2>No resumes were analyzed.</h2>
+            <a class="primary-btn inline-btn" href="{{ url_for('index') }}">Try Again</a>
+        </div>
+    {% endif %}
+
+</main>
+</body>
+</html>
