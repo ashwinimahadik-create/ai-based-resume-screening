@@ -14,7 +14,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 dir('ai-based-resume-screening-main') {
-                    bat 'docker build -t resume-screening:latest .'
+                    bat '"C:\\Users\\Ashwini\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" build -t resume-screening:latest .'
                 }
             }
         }
