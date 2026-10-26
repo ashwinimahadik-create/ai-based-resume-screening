@@ -22,10 +22,10 @@ pipeline {
 
     post {
         success {
-            echo 'SUCCESS: Docker image built successfully!'
+            echo 'SUCCESS: Docker image built!'
         }
         failure {
-            echo 'FAILED: Check the stage error in Console Output.'
+            echo 'FAILED: Check Console Output.'
         }
     }
 }
