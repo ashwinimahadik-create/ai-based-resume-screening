@@ -4,26 +4,32 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git branch: 'main',
+                    url: 'https://github.com/ashwinimahadik-create/ai-based-resume-screening.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Verify Files') {
             steps {
-                dir('ai-based-resume-screening-main') {
-                    sh 'python3 --version'
-                    sh 'python3 -m pip --version'
-                    sh 'python3 -m pip install --user -r requirements.txt'
-                }
+                bat 'dir'
+                bat 'if not exist app.py exit /b 1'
+                bat 'if not exist Dockerfile exit /b 1'
             }
         }
 
-        stage('Validate Python Files') {
+        stage('Build Docker Image') {
             steps {
-                dir('ai-based-resume-screening-main') {
-                    sh 'python3 -m py_compile app.py screening.py database.py'
-                }
+                bat 'docker build -t resume-screening:latest .'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check Console Output.'
         }
     }
 }
