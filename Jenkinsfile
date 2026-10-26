@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -5,24 +6,26 @@ pipeline {
         stage('Verify Project Files') {
             steps {
                 bat 'dir'
-                bat 'if not exist "ai-based-resume-screening-main\app.py" exit /b 1'
-                bat 'if not exist "ai-based-resume-screening-main\Dockerfile" exit /b 1'
+                bat 'if not exist "ai-based-resume-screening-main\\app.py" exit /b 1'
+                bat 'if not exist "ai-based-resume-screening-main\\Dockerfile" exit /b 1'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t resume-screening:latest ai-based-resume-screening-main'
+                dir('ai-based-resume-screening-main') {
+                    bat 'docker build -t resume-screening:latest .'
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'SUCCESS: Docker image built successfully!'
         }
         failure {
-            echo 'Pipeline failed. Check Console Output.'
+            echo 'FAILED: Check the stage error in Console Output.'
         }
     }
 }
