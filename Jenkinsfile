@@ -18,11 +18,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Verify Kubernetes Deployment Manifest') {
+            steps {
+                bat 'dir ai-based-resume-screening-main\\k8s'
+                bat 'if not exist "ai-based-resume-screening-main\\k8s\\deployment.yaml" exit /b 1'
+                bat 'type "ai-based-resume-screening-main\\k8s\\deployment.yaml"'
+            }
+        }
     }
 
     post {
         success {
-            echo 'SUCCESS: Docker image built!'
+            echo 'SUCCESS: Docker image built and Kubernetes manifest verified!'
         }
         failure {
             echo 'FAILED: Check Console Output.'
