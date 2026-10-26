@@ -1,15 +1,9 @@
+
 pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/ashwinimahadik-create/ai-based-resume-screening.git'
-            }
-        }
-
-        stage('Verify Files') {
+        stage('Verify Project Files') {
             steps {
                 bat 'dir'
                 bat 'if not exist app.py exit /b 1'
